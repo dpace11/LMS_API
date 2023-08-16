@@ -1,0 +1,53 @@
+﻿@model LMS_API.Models.Student.Students
+
+
+<h1>
+    Student Details</h1>
+
+<div class="container">
+    @*<div class="form-control">*@
+        <table width="500px;">
+            <tr>
+                <td ><b>@Html.DisplayNameFor(m=>m.StudentName):</b></td>
+                <td>@Html.DisplayFor(m=>m.StudentName)</td>
+            </tr>
+
+        <tr>
+            <td><b>@Html.DisplayNameFor(m=>m.StudentRollNo):</b></td>
+            <td>@Html.DisplayFor(m=>m.StudentRollNo)</td>
+        </tr>
+
+        <tr>
+            <td><b>@Html.DisplayNameFor(m=>m.Department):</b></td>
+            <td>@Html.DisplayFor(m=>m.Department)</td>
+        </tr>
+
+        <tr>
+            <td><b>@Html.DisplayNameFor(m=>m.Semester):</b></td>
+            <td>@Html.DisplayFor(m=>m.Semester)</td>
+        </tr>
+
+        <tr>
+            <td><b>@Html.DisplayNameFor(m=>m.StudentEmail):</b></td>
+            <td>@Html.DisplayFor(m=>m.StudentEmail)</td>
+        </tr>
+
+        <tr>
+            <td><b>@Html.DisplayNameFor(m=>m.StudentContact):</b></td>
+            <td>@Html.DisplayFor(m=>m.StudentContact)</td>
+        </tr>
+
+            <tr>
+        <td>
+            <a class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this!! ');" asp-action="DeleteStudent" asp-controller="StudentConusme" asp-route-id="@Model.StudentID">Delete</a> |
+            <a class="btn btn-sm btn-info float-right 2" asp-action="Index" asp-controller="StudentConusme">Back To List</a>
+        </td>
+       
+    </tr>
+
+        </table>
+        
+
+       
+   @* </div>*@
+</div>

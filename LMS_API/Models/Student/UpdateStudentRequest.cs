@@ -5,11 +5,11 @@ namespace LMS_API.Models.Student
     public class UpdateStudentRequest
     {
 
-        [Display(Name = "Roll No")]
+        /*[Display(Name = "Roll No")]
         [Range(750101, 750599, ErrorMessage = "Roll no shoud be within 7501XX--7505XX")]
         [Required]
         public int StudentRollNo { get; set; }
-
+*/
 
         [Display(Name = "Student Name")]
         [Required]

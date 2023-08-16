@@ -1,20 +1,18 @@
-﻿using LMS_API.Models.Student;
+﻿using LMS_API.Models.Author;
+using LMS_API.Models.Student;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Text.Json;
 
 namespace ConsumeAPI.Controllers
 {
-    public class StudentConusmeController : Controller
+    public class AuthorConsumeController : Controller
     {
         private readonly string apiBaseUrl = "https://localhost:7147";
-
-        [HttpGet]
         public IActionResult Index()
         {
-            List<Students> data = new List<Students>();
+            List<Author> data = new List<Author>();
 
             try
             {
@@ -24,12 +22,12 @@ namespace ConsumeAPI.Controllers
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                    HttpResponseMessage response = client.GetAsync("/api/Student/GetAllStudent").Result;
+                    HttpResponseMessage response = client.GetAsync("/api/Author/GetAllAuthors").Result;
 
                     if (response.IsSuccessStatusCode)
                     {
                         string stringData = response.Content.ReadAsStringAsync().Result;
-                        data = JsonConvert.DeserializeObject<List<Students>>(stringData);
+                        data = JsonConvert.DeserializeObject<List<Author>>(stringData);
                     }
                     else
                     {
@@ -44,15 +42,17 @@ namespace ConsumeAPI.Controllers
             return View(data);
         }
 
+
         [HttpGet]
-        public IActionResult AddStudent()
+        public IActionResult AddAuthor()
         {
-            Students student = new();
-            return View(student);
+            Author author = new Author();
+            return View(author);
         }
 
+
         [HttpPost]
-        public IActionResult AddStudent(Students model)
+        public IActionResult AddAuthor(Author model)
         {
             try
             {
@@ -63,9 +63,10 @@ namespace ConsumeAPI.Controllers
                         client.BaseAddress = new Uri(apiBaseUrl);
                         var data = JsonConvert.SerializeObject(model);
                         var contentData = new StringContent(data, Encoding.UTF8, "application/json");
-                        if (model.StudentID == Guid.Empty)
+
+                        if (model.ID == Guid.Empty)
                         {
-                            HttpResponseMessage response = client.PostAsync("/api/Student/AddStudent", contentData).Result;
+                            HttpResponseMessage response = client.PostAsync("api/Author/AddAuthor", contentData).Result;
 
                             if (response.IsSuccessStatusCode)
                             {
@@ -75,11 +76,10 @@ namespace ConsumeAPI.Controllers
                             {
                                 TempData["error"] = $"{response.ReasonPhrase}";
                             }
-
                         }
                         else
                         {
-                            HttpResponseMessage response = client.PutAsync("/api/Student/UpdateStudent", contentData).Result;
+                            HttpResponseMessage response = client.PutAsync("/api/Author/UpdateAuthor", contentData).Result;
                             if (response.IsSuccessStatusCode)
                             {
                                 TempData["success"] = response.Content.ReadAsStringAsync().Result;
@@ -89,8 +89,8 @@ namespace ConsumeAPI.Controllers
                                 TempData["error"] = $"{response.ReasonPhrase}";
                             }
                         }
-                    }
 
+                    }
 
                 }
                 else
@@ -107,12 +107,12 @@ namespace ConsumeAPI.Controllers
         }
 
 
-        public IActionResult DeleteStudent(Guid id)
+        public IActionResult DeleteAuthor(Guid id)
         {
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri(apiBaseUrl);
-                HttpResponseMessage response = client.DeleteAsync("/api/Student/DeleteStudent/" + id).Result;
+                HttpResponseMessage response = client.DeleteAsync($"api/Author/DeleteAuthor/{id}").Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -123,20 +123,42 @@ namespace ConsumeAPI.Controllers
                     TempData["error"] = $"{response.ReasonPhrase}";
                 }
             }
-
             return RedirectToAction("Index");
         }
 
 
         [HttpGet]
-        public IActionResult EditStudent()
+        public IActionResult AuthorDetail(Guid id)
+        { 
+            using (HttpClient client = new HttpClient()) 
+            {
+                client.BaseAddress = new Uri(apiBaseUrl);
+                HttpResponseMessage response = client.GetAsync("api/Author/GetAuthorById/" + id).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string strindData = response.Content.ReadAsStringAsync().Result;
+                    Author author = JsonConvert.DeserializeObject<Author>(strindData);
+                    return View(author);
+                }
+                else
+                {
+                    TempData["error"] = $"{response.ReasonPhrase}";
+                }                
+            }
+            return View();
+        }
+
+
+        [HttpGet]
+        public IActionResult EditAuthor()
         {
-             Students student = new();
-            return View(student);
+            Author auth = new();
+            return View(auth);
         }
 
         [HttpPost]
-        public IActionResult EditStudent(Guid model)
+        public IActionResult EditAuthor(Author model)
         {
             try
             {
@@ -148,16 +170,16 @@ namespace ConsumeAPI.Controllers
                         var data = JsonConvert.SerializeObject(model);
                         var contentData = new StringContent(data, Encoding.UTF8, "application/json");
 
-                      
-                            HttpResponseMessage response = client.PutAsync($"/api/Student/UpdateStudent/{model}", contentData).Result;
-                            if (response.IsSuccessStatusCode)
-                            {
-                                TempData["success"] = response.Content.ReadAsStringAsync().Result;
-                            }
-                            else
-                            {
-                                TempData["error"] = $"{response.ReasonPhrase}";
-                            }                        
+
+                        HttpResponseMessage response = client.PutAsync("/api/Author/UpdateAuthor", contentData).Result;
+                        if (response.IsSuccessStatusCode)
+                        {
+                            TempData["success"] = response.Content.ReadAsStringAsync().Result;
+                        }
+                        else
+                        {
+                            TempData["error"] = $"{response.ReasonPhrase}";
+                        }
                     }
                 }
                 else
@@ -173,29 +195,6 @@ namespace ConsumeAPI.Controllers
             return RedirectToAction("Index");
         }
 
-
-        [HttpGet]
-        public IActionResult StudentDetails(Guid id)
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(apiBaseUrl);
-                HttpResponseMessage response = client.GetAsync("/api/Student/GetStudentById/" + id).Result;
-
-                if (response.IsSuccessStatusCode)
-                {
-                    string stringData = response.Content.ReadAsStringAsync().Result;
-                    Students student = JsonConvert.DeserializeObject<Students>(stringData);
-                    return View(student);
-                }
-                else
-                {
-                    TempData["error"] = $"{response.ReasonPhrase}";
-                }
-            }
-
-            return View();
-
-        }
+        
     }
 }

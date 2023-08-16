@@ -1,0 +1,55 @@
+﻿@model LMS_API.Models.Membership.Membership
+@{
+    ViewData["Title"] = "AddMember";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-6 offset-3 border border-dark p-4 rounded rounded-top">
+
+
+            <form method="post" asp-action="AddMembership">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <h1 class="text-center card-header text-info m-1 p-2">Add Membership </h1>
+
+                <div class="form-group">
+                    <label asp-for="StudentRollNo"></label>
+                    <input type="text" asp-for="StudentRollNo" class="form-control" />
+                    <span asp-validation-for="StudentRollNo"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <label asp-for="FullName"></label>
+                    <input type="text" asp-for="FullName" class="form-control" />
+                    <span asp-validation-for="FullName"></span>
+                </div>
+
+
+
+                <div class="form-group">
+                    <label asp-for="MembershipIssueDate"></label>
+                    <input type="date" asp-for="MembershipIssueDate" class="form-control" />
+                    <span asp-validation-for="MembershipIssueDate"></span>
+                </div>
+
+
+
+                <div class="form-group">
+                    <input type="submit" value="Add Members" class="btn btn-sm btn-primary float-right mt-2 p-2" />
+
+                </div>
+              
+
+
+            </form>
+        </div>
+
+    </div>
+</div>
+@section scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");
+    }
+}

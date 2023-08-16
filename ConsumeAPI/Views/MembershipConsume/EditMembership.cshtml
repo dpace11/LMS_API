@@ -1,0 +1,62 @@
+﻿@model LMS_API.Models.Membership.Membership
+@{
+    ViewData["Title"] = "EditMembership";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-6 offset-3 border border-dark p-4 rounded rounded-top">
+
+            <h1 class="text-center card-header text-warning m-1 p-2">Update Member Details</h1>
+
+
+            <form method="post" asp-action="EditMembership">
+
+                <div asp-validation-summary="ModelOnly"></div>
+
+                <div class="form-group">
+                    <label asp-for="StudentRollNo"></label>
+                    <input type="text" asp-for="StudentRollNo" class="form-control" />
+
+                    <span asp-validation-for="StudentRollNo" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="FullName"></label>
+                    <input type="text" asp-for="FullName" class="form-control" placeholder="Enter Name" />
+
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+
+               
+                <div class="form-group">
+                    <label asp-for="MembershipIssueDate" class="control-label"></label>
+                    <input asp-for="MembershipIssueDate" class="form-control" />
+                    <span asp-validation-for="MembershipIssueDate" class="text-danger"></span>
+                </div>
+
+                @*<div class="form-group">
+                    <label asp-for="MembershipEndDate" class="control-label"></label>
+                    <input asp-for="MembershipEndDate" class="form-control" />
+                    <span asp-validation-for="MembershipEndDate" class="text-danger" />
+                </div>*@
+
+               
+
+                <div class="form-group">
+                    <input type="submit" value="Update" class="btn btn-sm btn-warning float-right mt-2 p-2" />
+
+                </div>
+            </form>
+
+            <a class="btn btn-sm btn-info float-right mt-2 p-2" asp-action="Index" asp-controller=" MembershipConsume">Back To List</a>
+
+        </div>
+
+    </div>
+</div>
+@section scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");
+    }
+}

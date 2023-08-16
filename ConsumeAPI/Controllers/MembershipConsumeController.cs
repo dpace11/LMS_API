@@ -1,58 +1,62 @@
-﻿using LMS_API.Models.Student;
+﻿using LMS_API.Models.Membership;
+using LMS_API.Models.Student;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Text.Json;
 
 namespace ConsumeAPI.Controllers
 {
-    public class StudentConusmeController : Controller
+    public class MembershipConsumeController : Controller
     {
         private readonly string apiBaseUrl = "https://localhost:7147";
 
         [HttpGet]
         public IActionResult Index()
         {
-            List<Students> data = new List<Students>();
+            List<Membership> data = new();
 
             try
             {
-                using (HttpClient client = new HttpClient())
+                using (HttpClient client = new HttpClient()) 
                 {
                     client.BaseAddress = new Uri(apiBaseUrl);
                     client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("applicatin/json"));
 
-                    HttpResponseMessage response = client.GetAsync("/api/Student/GetAllStudent").Result;
+                    HttpResponseMessage response = client.GetAsync("/api/Membership/GetAllMembers").Result;
 
                     if (response.IsSuccessStatusCode)
                     {
                         string stringData = response.Content.ReadAsStringAsync().Result;
-                        data = JsonConvert.DeserializeObject<List<Students>>(stringData);
+                        data = JsonConvert.DeserializeObject<List<Membership>>(stringData);
+
                     }
                     else
                     {
                         TempData["error"] = $"{response.ReasonPhrase}";
-                    }
+                    }                  
+                    
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 TempData["exception"] = ex.Message;
             }
             return View(data);
         }
 
+
         [HttpGet]
-        public IActionResult AddStudent()
+        public IActionResult AddMembership()
         {
-            Students student = new();
-            return View(student);
+            Membership member = new();
+            return View (member);
         }
 
+
         [HttpPost]
-        public IActionResult AddStudent(Students model)
+        public IActionResult AddMembership(Membership model)
         {
             try
             {
@@ -63,23 +67,9 @@ namespace ConsumeAPI.Controllers
                         client.BaseAddress = new Uri(apiBaseUrl);
                         var data = JsonConvert.SerializeObject(model);
                         var contentData = new StringContent(data, Encoding.UTF8, "application/json");
-                        if (model.StudentID == Guid.Empty)
+                        if (model.MembershipId == Guid.Empty)
                         {
-                            HttpResponseMessage response = client.PostAsync("/api/Student/AddStudent", contentData).Result;
-
-                            if (response.IsSuccessStatusCode)
-                            {
-                                TempData["success"] = response.Content.ReadAsStringAsync().Result;
-                            }
-                            else
-                            {
-                                TempData["error"] = $"{response.ReasonPhrase}";
-                            }
-
-                        }
-                        else
-                        {
-                            HttpResponseMessage response = client.PutAsync("/api/Student/UpdateStudent", contentData).Result;
+                            HttpResponseMessage response = client.PostAsync("api/Membership/AddMembers", contentData).Result;
                             if (response.IsSuccessStatusCode)
                             {
                                 TempData["success"] = response.Content.ReadAsStringAsync().Result;
@@ -89,113 +79,124 @@ namespace ConsumeAPI.Controllers
                                 TempData["error"] = $"{response.ReasonPhrase}";
                             }
                         }
-                    }
-
-
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "ModelState is not vali!!");
-                    return View(model);
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            return RedirectToAction("Index");
-        }
-
-
-        public IActionResult DeleteStudent(Guid id)
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(apiBaseUrl);
-                HttpResponseMessage response = client.DeleteAsync("/api/Student/DeleteStudent/" + id).Result;
-
-                if (response.IsSuccessStatusCode)
-                {
-                    TempData["success"] = response.Content.ReadAsStringAsync().Result;
-                }
-                else
-                {
-                    TempData["error"] = $"{response.ReasonPhrase}";
-                }
-            }
-
-            return RedirectToAction("Index");
-        }
-
-
-        [HttpGet]
-        public IActionResult EditStudent()
-        {
-             Students student = new();
-            return View(student);
-        }
-
-        [HttpPost]
-        public IActionResult EditStudent(Guid model)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    using (HttpClient client = new HttpClient())
-                    {
-                        client.BaseAddress = new Uri(apiBaseUrl);
-                        var data = JsonConvert.SerializeObject(model);
-                        var contentData = new StringContent(data, Encoding.UTF8, "application/json");
-
-                      
-                            HttpResponseMessage response = client.PutAsync($"/api/Student/UpdateStudent/{model}", contentData).Result;
+                        else
+                        {
+                            HttpResponseMessage response = client.PutAsync("api/Membership/UpdateMembers", contentData).Result;
                             if (response.IsSuccessStatusCode)
                             {
                                 TempData["success"] = response.Content.ReadAsStringAsync().Result;
+
                             }
                             else
                             {
                                 TempData["error"] = $"{response.ReasonPhrase}";
-                            }                        
+                            }
+                        }
+
                     }
+
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "ModelState is not vali!!");
-                    return View(model);
+                    ModelState.AddModelError(string.Empty, "model state is not valid!!");
                 }
             }
-            catch (Exception)
+            catch(Exception ex)
             {
-                throw;
+                TempData["exception"] = ex.Message; 
+            }
+            return RedirectToAction("Index");
+        }
+
+
+        public async Task<IActionResult>  DeleteMembership(Guid id)
+        {
+            using (HttpClient client = new())
+            {
+                client.BaseAddress = new Uri(apiBaseUrl);
+                HttpResponseMessage respone = client.DeleteAsync("/api/Membership/DeleteMember/" + id).Result;
+
+                if (respone.IsSuccessStatusCode)
+                {
+                    TempData["success"] =await respone.Content.ReadAsStringAsync();
+                }
+                else
+                {
+                    TempData["error"] = $"{respone.ReasonPhrase}";
+                }
             }
             return RedirectToAction("Index");
         }
 
 
         [HttpGet]
-        public IActionResult StudentDetails(Guid id)
+        public IActionResult MembershipDetail(Guid id)
         {
-            using (HttpClient client = new HttpClient())
+            using (HttpClient client = new())
             {
                 client.BaseAddress = new Uri(apiBaseUrl);
-                HttpResponseMessage response = client.GetAsync("/api/Student/GetStudentById/" + id).Result;
+                HttpResponseMessage response = client.GetAsync("api/Membership/GetMemberById/" + id).Result;
 
                 if (response.IsSuccessStatusCode)
                 {
                     string stringData = response.Content.ReadAsStringAsync().Result;
-                    Students student = JsonConvert.DeserializeObject<Students>(stringData);
-                    return View(student);
+                    Membership member = JsonConvert.DeserializeObject<Membership>(stringData);
+                    return View(member);
                 }
                 else
                 {
                     TempData["error"] = $"{response.ReasonPhrase}";
                 }
             }
-
-            return View();
-
+            return View();            
         }
+
+
+        [HttpGet]
+        public IActionResult EditMembership()
+        {
+            Membership mem = new();
+            return View(mem);
+        }
+
+
+        [HttpPost]
+        public IActionResult EditMembership(Guid model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    using (HttpClient client = new HttpClient())
+                    {
+                        client.BaseAddress = new Uri(apiBaseUrl);
+                        var data = JsonConvert.SerializeObject(model);
+                        var contentData = new StringContent(data, Encoding.UTF8, "application/json");
+
+
+                        HttpResponseMessage response = client.PutAsync($"/api/Membership/UpdateMembers/{model}", contentData).Result;
+                        if (response.IsSuccessStatusCode)
+                        {
+                            TempData["success"] = response.Content.ReadAsStringAsync().Result;
+                        }
+                        else
+                        {
+                            TempData["error"] = $"{response.ReasonPhrase}";
+                        }
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "ModelState is not vali!!");
+                    return View(model);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return RedirectToAction("Index");
+        }
+
     }
 }

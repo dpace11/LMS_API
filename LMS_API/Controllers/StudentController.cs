@@ -75,12 +75,9 @@ namespace LMS_API.Controllers
         public async Task<IActionResult> UpdateStudent([FromRoute] Guid id, UpdateStudentRequest updateStudentRequest)
         {
             var check = await dbcontext.Students.FindAsync(id);
-            var check_if_already_exist = await dbcontext.Students.Where(x => x.StudentRollNo == updateStudentRequest.StudentRollNo).FirstOrDefaultAsync();
+         
             if (check != null)
             {
-                if (check_if_already_exist == null)
-                {
-                    check.StudentRollNo = updateStudentRequest.StudentRollNo;
                     check.StudentName = updateStudentRequest.StudentName;
                     check.Department = updateStudentRequest.Department;
                     check.Semester = updateStudentRequest.Semester;
@@ -89,11 +86,7 @@ namespace LMS_API.Controllers
 
                     await dbcontext.SaveChangesAsync();
                     return Ok("Record Updated Sucessfully!!");
-                }
-                else
-                {
-                    return BadRequest("Roll number already exist!!");
-                }
+             
 
             }
 

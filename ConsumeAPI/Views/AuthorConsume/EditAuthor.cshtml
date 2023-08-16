@@ -1,0 +1,69 @@
+﻿@model LMS_API.Models.Author.Author
+@{
+    ViewData["Title"] = "Edit Author";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-6 offset-3 border border-dark p-4 rounded rounded-top">
+
+            <h1 class="text-center card-header text-warning m-1 p-2">Update Student Details</h1>
+
+
+            <form method="post" asp-action="EditAuthor">
+
+                <div asp-validation-summary="ModelOnly"></div>
+
+
+
+                <div class="form-group">
+                    <label asp-for="AuthorName"></label>
+                    <input type="text" asp-for="AuthorName" class="form-control" placeholder="Enter Name" />
+
+                    <span asp-validation-for="AuthorName" class="text-danger"></span>
+                </div>
+
+               
+                <div class="form-group">
+                    <label asp-for="AuthorUserName" class="control-label"></label>
+                    <input asp-for="AuthorUserName" class="form-control" />
+                    <span asp-validation-for="AuthorUserName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Address" class="control-label"></label>
+                    <input asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PhoneNumber" class="control-label"></label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Update" class="btn btn-sm btn-warning float-right mt-2 p-2" />
+
+                </div>
+            </form>
+
+            <a class="btn btn-sm btn-info float-right mt-2 p-2" asp-action="Index" asp-controller="AuthorConusme">Back To List</a>
+
+        </div>
+
+    </div>
+</div>
+@section scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");
+    }
+}
+

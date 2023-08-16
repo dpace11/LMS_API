@@ -1,9 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
 
-namespace LMS_API.Models
+namespace LMS_API.Models.Books
 {
-    public class UpdateBookRequest
+    public class Books
     {
+        [Key]
+        public Guid BookId { get; set; }
+
+
         [Display(Name = "Book Name")]
         [StringLength(40, MinimumLength = 4, ErrorMessage = "Book Name must be at least 4 characters long")]
         [Required]

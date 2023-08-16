@@ -1,5 +1,5 @@
 ﻿using LMS_API.Data;
-using LMS_API.Models;
+using LMS_API.Models.Books;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,53 +45,56 @@ namespace LMS_API.Controllers
 
         }
 
-/*
-        [HttpGet]
-        [Route("{name:string}")]
-        public async Task<IActionResult> GetBookByName([FromRoute] string name)
-        {
-            var books = await dbcontext.Books.Where(x=>x.BookName==name).FirstOrDefaultAsync();
-
-            if (books != null)
-
-            {
-                return Ok(books);
-            }
-            else
-            {
-                return NotFound();
-            }
-
-        }*/
-
-
-
+       
 
         [HttpPost]
         [Route("AddBook")]
         public async Task<IActionResult> AddBook(AddBookRequest addbookRequest)
-        {
-            var book_already_exist = await dbcontext.Books.Where(b => b.BookName == addbookRequest.BookName).FirstOrDefaultAsync();
+        {          
 
-            if (book_already_exist == null)
+            var isBookAlreadyPresent = await dbcontext.Books.AnyAsync(b => b.BookName == addbookRequest.BookName);
+
+            var isAuthorInDb = await dbcontext.Authors.AnyAsync(a => a.AuthorName == addbookRequest.AuthorName);
+
+            var isPublicationInDb = await dbcontext.Publications.AnyAsync(p => p.PublicationName == addbookRequest.PublicationName);
+            
+
+            if (!isBookAlreadyPresent)
             {
-
-                var book = new Books()
+                if (isAuthorInDb)
                 {
-                    BookId = Guid.NewGuid(),
-                    BookName = addbookRequest.BookName,
-                    AuthorName = addbookRequest.AuthorName,
-                    PublicationName = addbookRequest.PublicationName,
-                    Price = addbookRequest.Price,
-                    PurchaseDate = addbookRequest.PurchaseDate,
-                    Quantity = addbookRequest.Quantity,
-                    BookLocation = addbookRequest.BookLocation,
-                    RemainingQuantity = addbookRequest.RemainingQuantity
-                };
-                await dbcontext.Books.AddAsync(book);
-                await dbcontext.SaveChangesAsync();
+                    if (isPublicationInDb)
+                    {
+                        var book = new Books()
+                        {
+                            BookId = Guid.NewGuid(),
+                            BookName = addbookRequest.BookName,
+                            AuthorName = addbookRequest.AuthorName,
+                            PublicationName = addbookRequest.PublicationName,
+                            Price = addbookRequest.Price,
+                            PurchaseDate = addbookRequest.PurchaseDate,
+                            Quantity = addbookRequest.Quantity,
+                            BookLocation = addbookRequest.BookLocation,
+                            RemainingQuantity = addbookRequest.RemainingQuantity
+                        };
 
-                return Ok(book);
+                        await dbcontext.Books.AddAsync(book);
+                        await dbcontext.SaveChangesAsync();
+
+                        return Ok(book);
+
+
+                    }
+                    else
+                    {
+                        return BadRequest("Publication details is not in Db. Enter publication details first!!");
+                    }
+                }
+                else
+                {
+                    return BadRequest("Author details is not in Db. Enter author details first!!");
+                }
+                
             }
             else
             {
@@ -108,19 +111,44 @@ namespace LMS_API.Controllers
         {
             var books = await dbcontext.Books.FindAsync(id);
 
+            var isAuthorInDb = await dbcontext.Authors.AnyAsync(a => a.AuthorName == updateBookRequest.AuthorName);
+
+            var isPublicationInDb = await dbcontext.Publications.AnyAsync(p => p.PublicationName == updateBookRequest.PublicationName);
+
+
             if (books != null)
             {
-                books.BookName = updateBookRequest.BookName;
-                books.AuthorName = updateBookRequest.AuthorName;
-                books.PublicationName = updateBookRequest.PublicationName;
-                books.Price = updateBookRequest.Price;
-                books.PurchaseDate = updateBookRequest.PurchaseDate;
-                books.Quantity = updateBookRequest.Quantity;
-                books.BookLocation = updateBookRequest.BookLocation;
-                books.RemainingQuantity = updateBookRequest.RemainingQuantity;
 
-                await dbcontext.SaveChangesAsync();
-                return Ok(books);
+                if (isAuthorInDb)
+                {
+                    if (isPublicationInDb)
+                    {
+                        books.AuthorName = updateBookRequest.AuthorName;
+                        books.PublicationName = updateBookRequest.PublicationName;
+                        books.Price = updateBookRequest.Price;
+                        books.PurchaseDate = updateBookRequest.PurchaseDate;
+                        books.Quantity = updateBookRequest.Quantity;
+                        books.BookLocation = updateBookRequest.BookLocation;
+                        books.RemainingQuantity = updateBookRequest.RemainingQuantity;
+
+                        await dbcontext.SaveChangesAsync();
+                        return Ok(books);
+                    }
+                    else
+                    {
+                        return BadRequest("The book's publication you are trying to update is not in DB. You must first enter publication's detail in DB ");
+
+                    }
+
+                }
+                else
+                {
+                    return BadRequest("The book's author you are trying to update is not in DB. You must first enter author's detail in DB ");
+                }
+
+
+                
+               
             }
             else
             {

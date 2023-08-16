@@ -1,0 +1,57 @@
+﻿@model LMS_API.Models.Publication.Publication
+
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-6 offset-3 border border-dark p-4 rounded rounded-top">
+
+
+            <form method="post" asp-action="AddPublication">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <h1 class="text-center card-header text-info m-1 p-2">Add Publication Details</h1>
+
+                <div class="form-group">
+                    <label asp-for="PublicationName"></label>
+                    <input type="text" asp-for="PublicationName" class="form-control" />
+                    <span asp-validation-for="PublicationName"></span>
+                </div>
+
+
+
+                <div class="form-group">
+                    <label asp-for="PubAddress"></label>
+                    <input type="text" asp-for="PubAddress" class="form-control" placeholder="Enter Name" />                  
+                    <span asp-validation-for="PubAddress" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PublicationPhNumber"></label>
+                    <input type="text" asp-for="PublicationPhNumber" class="form-control" placeholder="Enter Name" />
+                    <span asp-validation-for="PublicationPhNumber" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Add Publication" class="btn btn-sm btn-primary float-right mt-2 p-2" />
+
+                </div>             
+            </form>
+            <a class="btn btn-sm btn-info float-right mt-2 p-2" asp-action="Index" asp-controller="PublicationConsume">Back To List</a>
+
+        </div>
+
+    </div>
+</div>
+@section scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");
+    }
+}

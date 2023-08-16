@@ -1,0 +1,43 @@
+﻿@model LMS_API.Models.Membership.Membership
+
+
+<h1>
+    Member Details
+</h1>
+
+<div class="container">
+  
+    <table  width="500px;">
+        <tr>
+            <td><b>@Html.DisplayNameFor(m=>m.StudentRollNo):</b></td>
+            <td>@Html.DisplayFor(m=>m.StudentRollNo)</td>
+        </tr>
+
+        <tr>
+            <td><b>@Html.DisplayNameFor(m=>m.FullName):</b></td>
+            <td>@Html.DisplayFor(m=>m.FullName)</td>
+        </tr>
+
+        <tr>
+            <td><b>@Html.DisplayNameFor(m=>m.MembershipIssueDate):</b></td>
+            <td>@Html.DisplayFor(m=>m.MembershipIssueDate)</td>
+        </tr>
+
+        <tr>
+            <td><b>@Html.DisplayNameFor(m=>m.MembershipEndDate):</b></td>
+            <td>@Html.DisplayFor(m=>m.MembershipEndDate)</td>
+        </tr>
+
+        
+
+        <tr>
+            <td>
+                <a class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this!! ');" asp-action="DeleteMembership" asp-controller=" MembershipConsume" asp-route-id="@Model.MembershipId">Delete</a> |
+                <a class="btn btn-sm btn-info float-right 2" asp-action="Index" asp-controller="MembershipConsume">Back To List</a>
+            </td>
+
+        </tr>
+
+    </table>
+
+</div>

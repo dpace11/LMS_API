@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LMS_API.Models
+namespace LMS_API.Models.Books
 {
     public class AddBookRequest
     {

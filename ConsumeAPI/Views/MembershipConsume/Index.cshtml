@@ -1,0 +1,55 @@
+﻿@model IEnumerable<LMS_API.Models.Membership.Membership>
+@{
+    ViewData["Title"] = "Index";
+}
+<h4 class="text-center">Membership Details</h4>
+
+<div class="container">
+    <div class="row">
+        <div>
+            <a class="btn btn-sm btn-primary m-2  float-right" asp-action="AddMembership" asp-controller="MembershipConsume">Add Members</a>
+            <table class="table table-bordered table-striped table-hover" width="750px;">
+                <thead class=" text-center">
+                   @* <th>ID</th>*@
+                <th>Roll No</th>
+                <th>Full Name</th>
+                <th>Membership Issue </th>
+                <th>Membership End</th>               
+                <th>Actions</th>
+
+                </thead>
+                <tbody class="text-center">
+                    @if (Model.Count() > 0)
+                    {
+                        @foreach (var d in Model)
+                        {
+                            <tr>
+                                @*<td width="50px;" height="100px;">@d.StudentID</td>*@
+                              @*  <td>@d.MembershipId</td>*@
+                                <td>@d.StudentRollNo</td>
+                                <td>@d.FullName</td>
+                                <td>@d.MembershipIssueDate</td>
+                                <td>@d.MembershipEndDate</td>                                
+                                <td>
+                                    <a class="btn btn-sm btn-primary" asp-action="EditMembership" asp-controller=" MembershipConsume" asp-route-id="@d.MembershipId">Edit</a> |
+                                    <a class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this!! ');" asp-action="DeleteMembership" asp-controller=" MembershipConsume" asp-route-id="@d.MembershipId">Delete</a> |
+                                    <a class="btn btn-sm btn-warning" asp-action="MembershipDetail" asp-controller=" MembershipConsume" asp-route-id="@d.MembershipId">Details</a>
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr class="text-center">
+                            <td colspan="7"><h2 class="text-warning bg-yellow">No record in Database!!</h2></td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+
